@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title_block %}Profile{% endblock %}
+{% load static %}
+{% load my_filter %}
+{% block body_block %}
+
+    <div class="text-center d-flex align-items-center justify-content-center flex-column">
+        {% if user.user_profile.profile_pic %}
+            <img src="{{ user.user_profile.profile_pic.url }}" class="rounded-circle" width="200" height="200" alt="">
+        {% else %}
+            <img src="{% static "images/fox.jpg" %}" class="rounded-circle" width="200" height="200" alt="">
+        {% endif %}
+        <br>
+        <h2><b>{{ user.first_name }} {{ user.last_name }}</b></h2>
+        <br>
+        <p class="">{{ user.user_profile.about }}</p>
+        <br>
+        <div class="">
+            <a href="{{ user.user_profile.website }}" class="mx-1"><i class="fal fab fa-globe-asia"></i></a>
+            <a href="{{ user.user_profile.facebook }}" class="mx-1"><i class="fab fa-facebook-f"></i></a>
+            <a href="{{ user.user_profile.twitter }}" class="mx-1"><i class="fab fa-twitter"></i></a>
+            <a href="{{ user.user_profile.linkedin }}" class="mx-1"><i class="fab fa-linkedin"></i></a>
+            <a href="{{ user.user_profile.github }}" class="mx-1"><i class="fab fa-github"></i></a>
+        </div>
+    </div>
+    <div class="d-flex align-items-center justify-content-center">
+        <div class="grid">
+            {% for blog in blogs %}
+                {% if blog == user %}
+                    {% for b in blog.user_blog.all %}
+                        <div class="blog">
+                <div class="blog-img">
+                    <img src="{{ b.blogimg.url }}" alt="" class="img-fluid">
+                </div>
+                <br>
+                <div class="tag d-flex">
+                    <a href="{% url "tech_blog:all-blogs" name=b.category.category_name|lower|replacespace %}">
+                        <h6 class="h6-slider"><b>{{ b.category.category_name }}</b></h6>
+                    </a>
+                    <span>&nbsp; &nbsp;</span>
+                    <a href="{% url "tech_blog:all-blogs" name=b.sub_category.subcategory_name|lower|replacespace %}">
+                        <h6 class="h6-slider"><b>{{ b.sub_category.subcategory_name }}</b></h6>
+                    </a>
+                </div>
+                <br>
+                <a href="{% url "tech_blog:blog-content" slug_name=b.slug %}">
+                    <h5>{{ b.blogtitle }}</h5>
+                </a>
+                <div class="blog-summery">
+                    <p>{{ b.blogcontent|range_filter }}
+                        <a href="{% url "tech_blog:blog-content" slug_name=b.slug %}">Read More...</a></p>
+                </div>
+            </div>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+
+
+        </div>
+    </div>
+
+{% endblock %}

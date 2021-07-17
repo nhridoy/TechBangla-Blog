@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title_block %}Registration{% endblock %}
+{% block body_block %}
+    <div class="setting-section">
+        <div class="menu">
+            <a href="{% url "tech_user:basic-settings" %}"><i class="fal fa-user-edit"></i> Basic Info</a>
+        </div>
+        {% if user.user_profile %}
+        <div class="menu">
+            <a href="{% url "tech_user:other-settings" %}"><i class="fal fa-edit"></i> Other Info</a>
+        </div>
+        {% else %}
+        <div class="menu">
+            <a href="{% url "tech_user:profilepic-settings" %}"><i class="fal fa-portrait"></i> Add Profile Picture</a>
+        </div>
+        {% endif %}
+        <div class="menu">
+            <a href="{% url "tech_user:passchange" %}"><i class="fal fa-user-secret"></i> Change Password</a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load my_filter %}
+{% block title_block %} HomePage - TechBangla {% endblock %}
+{% block body_block %}
+    {#    Slider Section#}
+    <div class="slider">
+        <div class="slider-class">
+            {% for blog in blogs %}
+                <div>
+                <div class="row d-flex justify-content-center align-items-center">
+                    <div class="col-lg-8 col-md-6 col-sm-12 col-12 px-sm-3 px-3">
+                        <div class="banner-img-div banner-img">
+                            <img src="{{ blog.blogimg.url }}" alt="" class="img-fluid border-radius">
+                            <div class="overlay">
+                                <a href="{% url "tech_blog:blog-content" slug_name=blog.slug %}"><i id="myButton" class="fal fa-book-reader"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 col-12 banner-text py-5">
+                        <h6 class="h6-slider"><span><a href="{% url "tech_blog:all-blogs" name=blog.category.category_name|lower|replacespace %}">{{ blog.category.category_name }}</a></span>, <span><a href="{% url "tech_blog:all-blogs" name=blog.sub_category.subcategory_name|lower|replacespace %}">{{ blog.sub_category.subcategory_name }}</a></span></h6>
+                        <h2 class="pe-3">{{ blog.blogtitle}}</h2>
+                        <p class="pe-3">{{ blog.blogcontent|range_filter }} <a href="{% url "tech_blog:blog-content" slug_name=blog.slug %}">Read More...</a></p>
+                        <p class="blog-author-banner">Nahidujjaman:25 December 2020 | <i class="fal fa-thumbs-up"></i>
+                            {{ blog.blog_like.count }}
+                            | <i class="fal fa-comment-alt"></i> {{ blog.blog_comment.count }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {#    Latest Blogs#}
+    <div class="latest-blogs-section">
+        <div class="text-separation">
+            <div class="text-separator"></div>
+            <div class="text-separator-content">
+                <h3 class="px-3"><b>Latest Blogs</b></h3>
+            </div>
+            <div class="text-separator"></div>
+        </div>
+        <br>
+        <div class="latest-blogs row">
+            {% for blog in blogs %}
+                <div class="col-lg-4 col-md-4 col-sm-6 col-12 mb-4">
+                <div class=" latest-blogs-img-div">
+                    <img src="{{ blog.blogimg.url }}" class="img-fluid border-radius" alt="">
+                    <div class="overlays">
+                        <div class="overlays-content">
+                            <h6 class="h6-latest"><span><a href="{% url "tech_blog:all-blogs" name=blog.category.category_name|lower|replacespace %}">{{ blog.category.category_name }}</a></span>, <span><a href="{% url "tech_blog:all-blogs" name=blog.sub_category.subcategory_name|lower|replacespace %}">{{ blog.sub_category.subcategory_name }}</a></span>
+                            </h6>
+                            <a href="{% url "tech_blog:blog-content" slug_name=blog.slug %}"><h2>{{ blog.blogtitle}}</h2></a>
+                            <p class="blog-author-latest">{{ blog.user.first_name }}: {{ blog.published_date}} | <i
+                                    class="fal fa-thumbs-up"></i> {{ blog.blog_like.count }}
+                                | <i class="fal fa-comment-alt"></i> {{ blog.blog_comment.count }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {#    Popular Blogs#}
+    <div class="popular-blogs-section">
+        <div class="text-separation">
+            <div class="text-separator"></div>
+            <div class="text-separator-content">
+                <h3 class="px-3"><b>Popular Blogs</b></h3>
+            </div>
+            <div class="text-separator"></div>
+        </div>
+        <br>
+        <div class="popular-blogs row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-12 mb-4 popular-blogs-col">
+                <div class="popular-blogs-img-div">
+                    <img src="{% static "images/11.jpg" %}" class="img-fluid border-radius" alt="">
+                    <div class="popular-overlays">
+                        <div class="popular-overlays-content">
+                            <h6 class="h6-latest"><span><a href="">DESIGN</a></span>, <span><a href="">ART</a></span>
+                            </h6>
+                            <a href=""><h2>Blog Title that is very very very Big</h2></a>
+                            <p class="blog-author-latest">Nahidujjaman:25 December 2020 | <i
+                                    class="fal fa-thumbs-up"></i> 5
+                                | <i class="fal fa-comment-alt"></i> 10</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-12 mb-4 popular-blogs-col popular-blogs-slider">
+                {% for blog in blogs %}
+                    <div class="">
+                    <hr>
+                    <a href="{% url "tech_blog:blog-content" slug_name=blog.slug %}">
+                        <div class="popular-blogs-slider-div border-radius">
+                            <div class="row d-flex align-items-center">
+                                <div class="col-2">
+                                    <img src="{{ blog.blogimg.url }}" class="rounded-circle" alt="">
+                                </div>
+                                <div class="col-8">
+                                    <h4>{{ blog.blogtitle}}</h4>
+                                    <p>{{ blog.user.first_name }}: {{ blog.published_date }} | <i class="fal fa-thumbs-up"></i> {{ blog.blog_like.count }}
+                                        | <i class="fal fa-comment-alt"></i> {{ blog.blog_comment.count }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <hr>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}

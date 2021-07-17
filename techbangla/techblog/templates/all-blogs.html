@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title_block %}All Blogs in Categories{% endblock %}
+{% load static %}
+{% load my_filter %}
+{% block body_block %}
+    <div class="d-flex align-items-center justify-content-center">
+        <div class="grid">
+            {% for blog in blogs %}
+                {% if path == blog.sub_category.subcategory_name|replacespace %}
+                    <div class="blog">
+                <div class="blog-img">
+                    <img src="{{ blog.blogimg.url }}" alt="" class="img-fluid">
+                </div>
+                <br>
+                <div class="tag d-flex">
+                    <a href="{% url "tech_blog:all-blogs" name=blog.category|lower|replacespace %}">
+                        <h6 class="h6-slider"><b>{{ blog.category }}</b></h6>
+                    </a>
+                    <span>&nbsp; &nbsp;</span>
+                    <a href="{% url "tech_blog:all-blogs" name=blog.sub_category.subcategory_name|lower|replacespace %}">
+                        <h6 class="h6-slider"><b>{{ blog.sub_category.subcategory_name }}</b></h6>
+                    </a>
+                </div>
+                <br>
+                <a href="{% url "tech_blog:blog-content" slug_name=blog.slug %}">
+                    <h5>{{ blog.blogtitle }}</h5>
+                </a>
+                <div class="blog-summery">
+                    <p>{{ blog.blogcontent|range_filter }}
+                        <a href="{% url "tech_blog:blog-content" slug_name=blog.slug %}">Read More...</a></p>
+                </div>
+            </div>
+                    {% elif path == blog.category.category_name|replacespace %}
+                    <div class="blog">
+                <div class="blog-img">
+                    <img src="{{ blog.blogimg.url }}" alt="" class="img-fluid">
+                </div>
+                <br>
+                <div class="tag d-flex">
+                    <a href="{% url "tech_blog:all-blogs" name=blog.category|lower|replacespace %}">
+                        <h6 class="h6-slider"><b>{{ blog.category }}</b></h6>
+                    </a>
+                    <span>&nbsp; &nbsp;</span>
+                    <a href="{% url "tech_blog:all-blogs" name=blog.sub_category.subcategory_name|lower|replacespace %}">
+                        <h6 class="h6-slider"><b>{{ blog.sub_category.subcategory_name }}</b></h6>
+                    </a>
+                </div>
+                <br>
+                <a href="{% url "tech_blog:blog-content" slug_name=blog.slug %}">
+                    <h5>{{ blog.blogtitle }}</h5>
+                </a>
+                <div class="blog-summery">
+                    <p>{{ blog.blogcontent|range_filter }}
+                        <a href="{% url "tech_blog:blog-content" slug_name=blog.slug %}">Read More...</a></p>
+                </div>
+            </div>
+                {% endif %}
+
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

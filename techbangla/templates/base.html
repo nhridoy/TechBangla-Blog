@@ -1,0 +1,328 @@
+<!doctype html>
+{% load static %}
+{% load my_filter %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title_block %} Home Title {% endblock %}</title>
+    <link rel="icon" href="{% static "images/favicon.ico" %}">
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "fonts/css/all.min.css" %}">
+    {#    <link rel="stylesheet" href="./static/fonts/css/all.min.css">#}
+    <link rel="stylesheet" href="{% static "css/style.css" %}">
+    <link rel="stylesheet" href="{% static "css/slick.css" %}">
+    <link rel="stylesheet" href="{% static "css/slick-theme.css" %}">
+    <link rel="stylesheet" href="{% static "css/dropzone.css" %}">
+</head>
+<body>
+<div class="container-fluid px-lg-5">
+    <div class="p-4 pt-4">
+        <div class="header p-1">
+            <div class="row">
+                <div class="col-lg-1 col-sm-2 col-2 col-xs-3 d-flex justify-content-center align-items-center">
+                    <div class="row">
+                        <div class="col-6 d-flex justify-content-center align-items-center search-btn">
+                            <button class="btn" href=""><i class="fal fa-search"></i></button>
+                            <div class="search">
+                                <input type="text" name="search" class="form-search">
+                            </div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-center align-items-center share">
+                            <button type="button" class="btn"><i class="fal fa-share-alt"></i></button>
+                            <ul class="share-items">
+                                <li><a href=""><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href=""><i class="fab fa-twitter"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col-lg-10 col-sm-8 col-8 col-xs-6 d-flex justify-content-center align-items-center">
+                    <a href="{% url "tech_blog:index" %}"><img src="{% static "images/logo.png" %}"
+                                                               alt="Tech Bangla Logo" class="logo"></a>
+                </div>
+                <div class="col-lg-1 col-sm-2 col-2 col-xs-3 d-flex justify-content-center align-items-center">
+                    {% if user.is_authenticated %}
+                    <div class="row">
+                        <div class="col-4 d-flex justify-content-center align-items-center"><a
+                                href="{% url "tech_blog:add-new" %}" id="addNew"><i class="fal fa-plus"></i></a></div>
+                        <div class="col-4 d-flex justify-content-center align-items-center">
+                            <a href="" class=" position-relative">
+                                <i class="fal fa-bell"></i>
+                                <span class="position-absolute start-100 translate-middle badge rounded-pill bg-danger"
+                                      style="top: -7px">
+                                    99+
+                                    <span class="visually-hidden">unread messages</span>
+                                </span>
+                            </a>
+                        </div>
+                        <div class="col-4 d-flex justify-content-center align-items-center">
+                            <div class="action">
+                                <div class="profile" onclick="menuToggle()">
+                                {% if user.user_profile.profile_pic %}
+                                    <img
+                                            src="{{ user.user_profile.profile_pic.url }}"
+                                            width="40" height="40" class="rounded-circle border border-1">
+                                    {% else %}
+                                    <img
+                                            src="{% static "images/fox.jpg" %}"
+                                            width="40" height="40" class="rounded-circle border border-1">
+                                    {% endif %}
+                                </div>
+                                <div class="menu">
+                                    <h3>{{ user.first_name }}<br><span>{{ user.last_name }}</span></h3>
+                                    <ul>
+                                        <li><a href="{% url "tech_user:ownprofile" %}"><i class="fal fa-user-alt"></i> Profile</a></li>
+                                        <li><a href="{% url "tech_user:user-settings" %}"><i class="fal fa-user-cog"></i> Profile Settings</a></li>
+                                        <li><a href="{% url "tech_blog:add-new" %}"><i class="fal fa-plus"></i> New Post</a></li>
+                                        <li><a href=""><i class="fal fa-newspaper"></i> My Posts</a></li>
+                                        <li><a href="{% url "tech_user:logouturl" %}"><i class="fal fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        {% else %}
+                        <div class="d-flex flex-column align-items-center justify-content-center">
+                            <div class="">
+                                <a href="{% url "tech_user:login" %}">Login</a>
+                            </div>
+                            <div class="">
+                                <a href="{% url "tech_user:registration" %}">Registration</a>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+            <hr>
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container-fluid">
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="{% url "tech_blog:index" %}">Home</a>
+                            </li>
+                            {% for cat in category %}
+                                {% if cat.has_subcategories %}
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                                           role="button"
+                                           data-bs-toggle="dropdown" aria-expanded="false">
+                                            {{ cat }}
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            {% for subcat in subcategory %}
+                                                {% if subcat.category.id == cat.id %}
+                                                    <li><a class="dropdown-item" href="{% url "tech_blog:all-blogs" name=subcat.subcategory_name|replacespace %}">{{ subcat.subcategory_name }}</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{% url "tech_blog:all-blogs" name=cat|replacespace %}">{{ cat }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+{#                            <li class="nav-item">#}
+{#                                <a class="nav-link" href="#">New Tech</a>#}
+{#                            </li>#}
+{#                            <li class="nav-item dropdown">#}
+{#                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"#}
+{#                                   data-bs-toggle="dropdown" aria-expanded="false">#}
+{#                                    Programming#}
+{#                                </a>#}
+{#                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">#}
+{#                                    <li><a class="dropdown-item" href="#">HTML</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">CSS</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">JavaScript</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">PHP</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Python</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Java</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">C</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">C++</a></li>#}
+{#                                </ul>#}
+{#                            </li>#}
+{#                            <li class="nav-item dropdown">#}
+{#                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"#}
+{#                                   data-bs-toggle="dropdown" aria-expanded="false">#}
+{#                                    Framework#}
+{#                                </a>#}
+{#                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">#}
+{#                                    <li><a class="dropdown-item" href="#">Bootstrap</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">React</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Angular</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Laravel</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Django</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Spring</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">React Native</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Flutter</a></li>#}
+{#                                </ul>#}
+{#                            </li>#}
+{#                            <li class="nav-item dropdown">#}
+{#                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"#}
+{#                                   data-bs-toggle="dropdown" aria-expanded="false">#}
+{#                                    Lifestyle#}
+{#                                </a>#}
+{#                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">#}
+{#                                    <li><a class="dropdown-item" href="#">Audio</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Movie</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Yoga</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Gym</a></li>#}
+{#                                </ul>#}
+{#                            </li>#}
+{#                            <li class="nav-item dropdown">#}
+{#                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"#}
+{#                                   data-bs-toggle="dropdown" aria-expanded="false">#}
+{#                                    Sports#}
+{#                                </a>#}
+{#                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">#}
+{#                                    <li><a class="dropdown-item" href="#">Football</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Cricket</a></li>#}
+{#                                    <li><a class="dropdown-item" href="#">Olympics</a></li>#}
+{#                                </ul>#}
+{#                            </li>#}
+                        </ul>
+                        <form class="d-flex">
+
+                        </form>
+                    </div>
+                </div>
+            </nav>
+            <hr>
+        </div>
+        <div class="container">
+            {% block body_block %}
+
+            {% endblock %}
+
+        </div>
+
+    </div>
+
+</div>
+{#    Footer Section#}
+<div class="footer-section">
+    <div class="container-fluid px-lg-5">
+        <div class="p-lg-4">
+            <div class="row py-3">
+                <div class="col-6">
+                    <img src="{% static "images/logo_footer.png" %}" alt="">
+                    <br>
+                    <p>Get it On:</p>
+                    <a href=""><img class="img-fluid" width="100" src="{% static "images/google-play-badge.png" %}"
+                                    alt=""></a>
+                    <a href=""><img class="img-fluid" width="100" src="{% static "images/google-play-badge.png" %}"
+                                    alt=""></a>
+
+                </div>
+                <div class="col-6">
+                    <p>Popular Categories:</p>
+                    <ul>
+                        <li><a href="">Technology</a></li>
+                        <li><a href="">Programming</a></li>
+                        <li><a href="">Movies</a></li>
+                    </ul>
+                </div>
+                <p class="text-center">All rights Reserved</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static "js/jquery-3.6.0.min.js" %}"></script>
+<script src="{% static "js/slick.min.js" %}"></script>
+<script src="{% static "js/bootstrap.js" %}"></script>
+<script src="{% static "js/popper.min.js" %}"></script>
+<script src="{% static "js/tippy-bundle.umd.js" %}"></script>
+<script src="{% static "js/dropzone.js" %}"></script>
+<script>
+    function menuToggle() {
+        const toggleMenu = document.querySelector(('.menu'));
+        toggleMenu.classList.toggle('active');
+    }
+
+    document.addEventListener("click", (evt) => {
+        const flyoutElement = document.querySelector(".border");
+        let targetElement = evt.target; // clicked element
+
+        do {
+            if (targetElement == flyoutElement) {
+                // This is a click inside. Do nothing, just return.
+                return;
+            }
+            // Go up the DOM
+            targetElement = targetElement.parentNode;
+        } while (targetElement);
+
+        // This is a click outside.
+        const toggleMenu = document.querySelector(('.menu'));
+        toggleMenu.classList.remove('active');
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.slider-class').slick({
+            dots: true,
+            infinite: true,
+            cssEase: 'linear',
+            autoplay: true,
+            accessibility: true,
+            arrows: true,
+            mobileFirst: true,
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.popular-blogs-slider').slick({
+            dots: false,
+            infinite: false,
+            cssEase: 'linear',
+            autoplay: true,
+            accessibility: true,
+            arrows: false,
+            mobileFirst: true,
+            vertical: true,
+            verticalSwiping: true,
+            slidesToShow: 3,
+            draggable: true,
+            swipe: true,
+            swipeToSlide: true,
+            touchMove: true,
+
+        }).on('wheel', (function (e) {
+            e.preventDefault();
+
+            if (e.originalEvent.deltaY < 0) {
+                $(this).slick('slickPrev');
+            } else {
+                $(this).slick('slickNext');
+            }
+        }));
+    });
+
+</script>
+<script>
+    tippy('#myButton', {
+        content: 'Read More...',
+    });
+</script>
+<script>
+    tippy('#addNew', {
+        content: 'Add New Blog',
+    });
+</script>
+</body>
+</html>

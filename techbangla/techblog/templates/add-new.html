@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title_block %}Add New Blog{% endblock %}
+{% block body_block %}
+<div class="new-blog-section">
+{% if blog.user == user %}
+<div class="text-separation mb-5">
+            <div class="text-separator-content border-bottom-2">
+                <h3><b>UPDATE</b></h3>
+            </div>
+            <div class="text-separator"></div>
+        </div>
+    {% else %}
+<div class="text-separation mb-5">
+            <div class="text-separator-content border-bottom-2">
+                <h3><b>ADD NEW</b></h3>
+            </div>
+            <div class="text-separator"></div>
+        </div>
+    {% endif %}
+
+    <form method="POST" action="" enctype="multipart/form-data">
+        {{ form|crispy }}
+{#        <label for="blogcat" class="label">BLOG CATEGORY</label>#}
+{#        <select name="blogcat" id="blogcat" class=" input-form">#}
+{#            <option value="" selected>Select</option>#}
+{#            <optgroup label="Programming">#}
+{#                <option value="Java">Java</option>#}
+{#                <option value="Python">Python</option>#}
+{#                <option value="Javascript">Javascript</option>#}
+{#            </optgroup>#}
+{#            <optgroup label="Framework">#}
+{#                <option value="Java">Java</option>#}
+{#                <option value="Python">Python</option>#}
+{#                <option value="Javascript">Javascript</option>#}
+{#            </optgroup>#}
+{#        </select>#}
+{#        <label for="blogtitle" class="label">BLOG TITLE</label>#}
+{#        <input type="text" name="blogtitle" id="blogtitle" class="input-form">#}
+{#        <label for="blogcontent" class="label">BLOG CONTENT</label>#}
+{#        <textarea name="blogcontent" id="blogcontent" cols="30" rows="10" class="textarea"></textarea>#}
+{#        <label for="blogimg" class="label">ADD Image</label>#}
+{#        <input type="file" name="blogimg" id="blogimg" class="input-form" accept="image/jpeg">#}
+        {% csrf_token %}
+        <div class="sep"></div>
+        {% if blog.user == user %}
+        <input type="submit" value="UPDATE" class="btn login-btn">
+        {% else %}
+        <input type="submit" value="CREATE" class="btn login-btn">
+        {% endif %}
+    </form>
+</div>
+{% endblock %}

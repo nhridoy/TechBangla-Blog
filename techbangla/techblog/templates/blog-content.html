@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title_block %} Blog Title Goes Here {% endblock %}
+{% block body_block %}
+    <div class="">
+        <div class="p-lg-5 text-center">
+            <div class="blog-cover">
+                <img class="border-radius" src="{{ blog.blogimg.url }}" alt="">
+                <div class="blog-title-overlay border-radius d-flex align-items-center justify-content-center flex-column p-sm-1 p-md-1 px-1">
+                    <h2><b>{{ blog.blogtitle }}</b></h2>
+                    <p><i>{{ blog.user.first_name }} {{ blog.user.last_name }}</i></p>
+                </div>
+            </div>
+        </div>
+        <div class="blog-content px-lg-5">
+            <div class="px-lg-5">
+                {% if user == blog.user %}
+                    <a href="{% url "tech_blog:edit-blog" slug_name=blog.slug %}" class="btn btn-primary">Edit</a>
+                {% endif %}
+                <div class="blog-content-l-c text-start my-4">{{ blog.user.first_name }}:&nbsp;{{ blog.published_date }}
+                    <br> <i
+                            class="fal fa-thumbs-up"></i> {{ blog.blog_like.count }} | <i class="fal fa-comment-alt"></i> {{ blog.blog_comment.count }}
+                </div>
+                <p>Updated On: {{ blog.edit_date }}</p>
+                <p class="">{{ blog.blogcontent }}</p>
+            </div>
+            <div class="l-c-section p-lg-5">
+                <p><a href="{% url "tech_blog:like" slug_name=blog.slug %}"><i class="fal fa-thumbs-up"></i></a>: {{ blog.blog_like.count }}</p>
+                <div class="blog-author-info mb-3 border-radius">
+                    <div class="row p-5">
+                        <div class="col-lg-2 author-img d-flex align-items-center justify-content-center">
+                            {% if blog.user.user_profile.profile_pic %}
+                            <img src="{{ blog.user.user_profile.profile_pic.url }}" alt="" class="rounded-circle" width="120"
+                                 height="120">
+                            {% else %}
+                            <img src="{% static "images/fox.jpg" %}" alt="" class="rounded-circle" width="120"
+                                 height="120">
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-9 author-info d-flex flex-column justify-content-lg-center align-items-lg-start align-items-sm-center ms-lg-4 ms-md-0 ms-sm-0 mt-md-3">
+                            <b><a href="{% url "tech_user:authorprofile" username=blog.user.username %}">{{ blog.user.first_name }} {{ blog.user.last_name }}</a></b>
+                            <p>{{ blog.user.user_profile.about }}</p>
+                            <p>
+                                <a href="{{ blog.user.user_profile.website }}"><i class="fab fa fa-globe-asia px-1"></i></a>
+                                <a href="{{ blog.user.user_profile.facebook }}"><i
+                                        class="fab fa-facebook-f px-1"></i></a>
+                                <a href="{{ blog.user.user_profile.twitter }}"><i class="fab fa-twitter px-1"></i></a>
+                                <a href="{{ blog.user.user_profile.linkedin }}"><i class="fab fa-linkedin px-1"></i></a>
+                                <a href="{{ blog.user.user_profile.github }}"><i class="fab fa-github px-1"></i></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-all-comments">
+                    <div class="text-separation">
+                        <div class="text-separator-content border-bottom-2">
+                            <h3><b>{{ blog.blog_comment.count }} COMMENTS</b></h3>
+                        </div>
+                        <div class="text-separator"></div>
+                    </div>
+                    <br>
+                    <br>
+                    {% for comment in blog.blog_comment.all %}
+                        <div>
+                        <div class="blog-comment row p-2">
+                            <div class="col-lg-2 author-img d-flex align-items-center justify-content-lg-center justify-content-md-start justify-content-sm-start justify-content-start">
+                                {% if comment.user.user_profile.profile_pic %}
+                                <img src="{{ comment.user.user_profile.profile_pic.url }}" alt="" class="rounded-circle" width="120" height="120">
+                                {% else %}
+                                <img src="{% static "images/fox.jpg" %}" alt="" class="rounded-circle" width="120" height="120">
+                                {% endif %}
+                            </div>
+                            <div class="col-lg-9 author-info d-flex flex-column justify-content-lg-center align-items-lg-start  ms-lg-4 ms-md-0 ms-sm-0 mt-md-3">
+                                {% if comment.user.first_name or comment.user.last_name %}
+                                <b><a href="{% url "tech_user:authorprofile" username=comment.user.username %}">{{ comment.user.first_name }} {{ comment.user.last_name }}</a></b>
+                                {% else %}
+                                <b><a href="{% url "tech_user:authorprofile" username=comment.user.username %}">{{ comment.user.username }}</a></b>
+                                {% endif %}
+                                <p>{{ comment.comment }}</p>
+                                <em>{{ comment.comment_date }}</em>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+                <div class="comment-section blog-author-info p-5 border-radius">
+                    <div class="text-separation mb-5">
+                        <div class="text-separator-content border-bottom-2">
+                            <h3><b>ADD COMMENT</b></h3>
+                        </div>
+                        <div class="text-separator"></div>
+                    </div>
+                    <form class="form" method="POST">
+                        {{ form|crispy }}
+                        <br>
+                        {% csrf_token %}
+                        <input type="submit" value="COMMENT" class="btn border-radius btn-primary">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
