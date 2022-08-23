@@ -167,9 +167,7 @@ def loginview(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         username, password = request.POST.get('username'), request.POST.get('password')
-        # username, password = form.cleaned_data.get('username'), form.cleaned_data.get('password') # Work as above
-        user = authenticate(username=username, password=password)
-        if user:
+        if user := authenticate(username=username, password=password):
             if user.is_active:
                 login(request, user)
                 return HttpResponseRedirect(reverse('tech_blog:index'))
