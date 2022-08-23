@@ -12,6 +12,6 @@ def replacespace(value):
 
 @register.filter
 def range_filter(value):
-    return value[0:150] + '.....'
+    return value[:150] + '.....'
 
 # register.filter('replace', replace)
